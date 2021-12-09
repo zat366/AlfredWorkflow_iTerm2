@@ -1,0 +1,14 @@
+#pycharm
+.idea/
+
+# Mac
+.DS_Store
+
+# vscode
+.vscode/
+
+# Python:
+*.pyc
+*.so
+*.egg
+*.egg-info
