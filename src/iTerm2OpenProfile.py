@@ -4,8 +4,8 @@ import sys
 import os
 import subprocess
 import io
-from workflow import Workflow, ICON_WEB, web
 
+import alfred
 
 iterm_plist = os.path.expanduser("~/Library/Preferences/com.googlecode.iterm2.plist")
 
@@ -50,6 +50,45 @@ def filter(items, query):
         return new_items
 
 
+# def to_alfred(res_list):
+#     # print(res_list)
+#     # if not res_list[0]:
+#     #     items = Element('items')
+#     #     item = SubElement(items, 'item')
+#     #     item.set('arg', res_list[1].get('res'))
+#     #     item.set('valid', 'yes')
+#     #     title = SubElement(item, 'title')
+#     #     title.text = res_list[1].get('res')
+#     #     subtitle = SubElement(item, 'subtitle')
+#     #     subtitle.text = ','.join(res_list[1].get('subtitle'))
+#     # elif res_list[0]==1:
+#     #     items = Element('items')
+#     #     for x in res_list[1]:
+#     #         item = SubElement(items, 'item')
+#     #         item.set('arg', x.get('res'))
+#     #         item.set('valid', 'yes')
+#     #         title = SubElement(item, 'title')
+#     #         title.text = x.get('res')
+#     #         subtitle = SubElement(item, 'subtitle')
+#     #         subtitle.text = ','.join(x.get('subtitle'))
+#     # else:
+#     items = Element('items')
+#     # print(res_list[1])
+#     for x in res_list:
+#         item = SubElement(items, 'item')
+#         # print(type(x))
+#         # print(x)
+#         # print(x.get('data'))
+#         item.set('arg', x.get('arg'))
+#         item.set('valid', 'yes')
+#         title = SubElement(item, 'title')
+#         title.text = x.get('title')
+#         subtitle = SubElement(item, 'subtitle')
+#         subtitle.text = x.get('subtitle')
+#     return tostring(items)
+
+
+
 def wsh_list(wf, query):
     tmp_json_file = create_local_copy()
     keyword_name = '"Name" => '
@@ -78,18 +117,19 @@ def wsh_list(wf, query):
     # Loop through the returned posts and add an item for each to
     # the list of results for Alfred
     items = filter(items, query)
+    res_list = []
     for item in items:
         wf.add_item(title=item['name'],
                     subtitle=item['tags'],
                     arg=item['name'],
                     valid=True)
-
     # Send the results to Alfred as XML
     wf.send_feedback()
 
 
 if __name__ == '__main__':
-    my_wf = Workflow()
+    query = sys.argv[1]
+    my_wf = alfred.Workflow()
     def wsh_lists(wf):
-        wsh_list(wf, query="{query}")
+        wsh_list(wf, query)
     sys.exit(my_wf.run(wsh_lists))
